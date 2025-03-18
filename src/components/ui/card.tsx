@@ -8,6 +8,12 @@ interface ICardProps {
 }
 
 export default function CardMenu(props: ICardProps) {
+  const fmt = Intl.NumberFormat("id", {
+    style: "currency",
+    currency: "IDR",
+    useGrouping: true,
+  });
+
   return (
     <Card.Root
       maxW={{ base: "300px", md: "md", lg: "lg", xl: "auto" }}
@@ -16,9 +22,11 @@ export default function CardMenu(props: ICardProps) {
       overflow="hidden"
     >
       <Image
-        height={{ base: "300px", md: "350", lg: "400px" }}
+        height={{ base: "280px", md: "350", lg: "400px" }}
         src={props.imageurl}
         alt={props.name}
+        crossOrigin="anonymous"
+        loading="lazy"
       />
       <Card.Body
         padding={"20px"}
@@ -31,7 +39,7 @@ export default function CardMenu(props: ICardProps) {
           <Card.Description>{props.description}</Card.Description>
         </Box>
         <br></br>
-        <Text>{props.price}</Text>
+        <Text>{fmt.format(props.price)}</Text>
       </Card.Body>
 
       <Card.Footer display="flex" justifyContent="center" mt="auto">

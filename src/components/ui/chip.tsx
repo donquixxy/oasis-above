@@ -1,4 +1,4 @@
-import { Box, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Card, Skeleton, SkeletonText, Text } from "@chakra-ui/react";
 
 interface IProps {
   title: string;
@@ -44,4 +44,35 @@ function SkeletonChip() {
   );
 }
 
-export { Chip, SkeletonChip };
+function SkeletonCardMenu() {
+  return (
+    <Card.Root
+      maxW={{ base: "300px", md: "md", lg: "lg", xl: "auto" }}
+      flexDirection="column"
+      overflow="hidden"
+      className="text-poppins"
+    >
+      <Skeleton height={{ base: "280px", md: "350px", lg: "400px" }} />
+
+      <Card.Body
+        padding={"20px"}
+        flex="1"
+        display="flex"
+        flexDirection="column"
+      >
+        <Skeleton height="20px" width="70%" mb="10px" />
+        <Box flex="1" overflow="hidden">
+          <SkeletonText mt="4" noOfLines={3} />
+        </Box>
+        <br />
+        <Skeleton height="20px" width="40%" />
+      </Card.Body>
+
+      <Card.Footer display="flex" justifyContent="center" mt="auto">
+        <Skeleton height="40px" width="80%" borderRadius="14px" />
+      </Card.Footer>
+    </Card.Root>
+  );
+}
+
+export { Chip, SkeletonChip, SkeletonCardMenu };

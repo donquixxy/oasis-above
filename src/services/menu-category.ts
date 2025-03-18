@@ -6,7 +6,7 @@ export default async function getAllMenuCategory(type: CategoryType) {
   try {
     const result = await api.get("/menu-category", {
       params: {
-        tenant_id: 4,
+        tenant_id: 6,
         type: type,
       },
     });

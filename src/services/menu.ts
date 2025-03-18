@@ -1,7 +1,6 @@
 import api from "../utils/api";
 
-interface IMenuParams {
-  tenantID: number | string;
+export interface IMenuParams {
   typeMenu: number | string;
   name?: string;
   menucategoryID?: number | string;
@@ -9,8 +8,25 @@ interface IMenuParams {
 
 export default async function getAllMenu(params: IMenuParams) {
   try {
-    const result = await api.get("/")
+    const queryParams: Record<string, any> = {
+      tenant_id: 6,
+      type_menu: params.typeMenu,
+    };
+
+    if (params.menucategoryID) {
+      queryParams.menu_category_id = params.menucategoryID;
+    }
+
+    if (params.name) {
+      queryParams.name = params.name;
+    }
+
+    const result = await api.get("/menu/table", {
+      params: queryParams,
+    });
+
+    return result.data;
   } catch (e) {
-    throw Error;
+    throw e; // Avoid throwing generic `Error` object without message
   }
 }
