@@ -6,6 +6,7 @@ import { useFormStore, useMenuStore } from "../../hooks/menu-store";
 import { addToCart, getCart, ICartPayload } from "../../services/cart";
 import { toaster } from "../../components/ui/toaster";
 import { useCookie } from "../../hooks/cookies";
+import { submitOrder } from "../../services/order";
 
 interface IMenuCategory {
   id: number;
@@ -132,4 +133,23 @@ export const useCart = () => {
     retry: false,
   });
   return { isLoading, data, isError };
+};
+
+export const useOrder = () => {
+  const session = useCookie();
+  const queryClient = useQueryClient();
+  const { isPending, mutate } = useMutation({
+    mutationFn: (cartID: number | string) => {
+      return submitOrder({
+        cart_id: cartID,
+        session_id: session.getSessionID,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: () => {},
+  });
+
+  return { isPending, mutate };
 };

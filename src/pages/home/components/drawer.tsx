@@ -1,5 +1,13 @@
-import { CloseButton, Drawer, Flex, Portal, Text } from "@chakra-ui/react";
-import { ICart } from "../hooks";
+import {
+  Button,
+  CloseButton,
+  Drawer,
+  Flex,
+  Portal,
+  ProgressCircle,
+  Text,
+} from "@chakra-ui/react";
+import { ICart, useOrder } from "../hooks";
 import { VCardMenu } from "../../../components/ui/card";
 import { fmt } from "../../../utils/fmt";
 
@@ -10,6 +18,8 @@ interface IDrawerProps {
 }
 
 export function CartDrawer(props: IDrawerProps) {
+  const { mutate, isPending } = useOrder();
+
   return (
     <div>
       <Drawer.Root
@@ -56,6 +66,32 @@ export function CartDrawer(props: IDrawerProps) {
                     <Flex marginTop={2} justifyContent="space-between">
                       <Text>Total</Text>
                       <Text>{fmt.format(props.Data.sub_total)}</Text>
+                    </Flex>
+
+                    <Flex justifyContent={"center"} marginTop={8}>
+                      <Button
+                        borderColor={"#9F8E68"}
+                        variant={"outline"}
+                        width="80%"
+                        color={"#9F8E68"}
+                        borderRadius={"14px"}
+                        onClick={() => {
+                          mutate(props.Data?.id!);
+                        }}
+                      >
+                        <div>
+                          {isPending ? (
+                            <ProgressCircle.Root value={null} size="xs">
+                              <ProgressCircle.Circle>
+                                <ProgressCircle.Track />
+                                <ProgressCircle.Range />
+                              </ProgressCircle.Circle>
+                            </ProgressCircle.Root>
+                          ) : (
+                            <>Place Order</>
+                          )}
+                        </div>
+                      </Button>
                     </Flex>
                   </>
                 )}
