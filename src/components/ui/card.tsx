@@ -1,6 +1,16 @@
-import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  Image,
+  Text,
+  Box,
+  ProgressCircle,
+} from "@chakra-ui/react";
+import { useCartMutation } from "../../pages/home/hooks";
+import { useCookie } from "../../hooks/cookies";
 
 interface ICardProps {
+  id: number;
   imageurl: string;
   name: string;
   description: string;
@@ -13,6 +23,9 @@ export default function CardMenu(props: ICardProps) {
     currency: "IDR",
     useGrouping: true,
   });
+
+  const { isPending, mutate } = useCartMutation();
+  const session = useCookie();
 
   return (
     <Card.Root
@@ -49,8 +62,26 @@ export default function CardMenu(props: ICardProps) {
           width="80%"
           color={"#9F8E68"}
           borderRadius={"14px"}
+          onClick={() => {
+            mutate({
+              menu_id: props.id,
+              quantity: 1,
+              session_id: session.getSessionID,
+            });
+          }}
         >
-          Add To Cart
+          <div>
+            {isPending ? (
+              <ProgressCircle.Root value={null} size="xs">
+                <ProgressCircle.Circle>
+                  <ProgressCircle.Track />
+                  <ProgressCircle.Range />
+                </ProgressCircle.Circle>
+              </ProgressCircle.Root>
+            ) : (
+              <p>Add To Cart</p>
+            )}
+          </div>
         </Button>
       </Card.Footer>
     </Card.Root>

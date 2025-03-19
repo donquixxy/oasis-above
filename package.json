@@ -14,10 +14,13 @@
     "@icon-park/react": "^1.4.2",
     "@tanstack/react-query": "^5.68.0",
     "axios": "^1.8.3",
+    "js-cookie": "^3.0.5",
     "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "typescript-cookie": "^1.0.6",
+    "uuid": "^11.1.0",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { HStack, SimpleGrid, useMenu } from "@chakra-ui/react";
+import { HStack, SimpleGrid } from "@chakra-ui/react";
 import CardMenu from "../../../components/ui/card";
 import { useEffect, useState } from "react";
 import { useMenus } from "../hooks";
@@ -8,7 +8,6 @@ import {
   SkeletonChip,
 } from "../../../components/ui/chip";
 import { useMenuStore } from "../../../hooks/menu-store";
-import { CategoryType } from "../../../services/menu-category";
 
 export default function HomeContent() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -58,6 +57,7 @@ export default function HomeContent() {
         {menuData && menuData.data
           ? menuData.data.map((val) => (
               <CardMenu
+                id={val.id}
                 description={val.description}
                 imageurl={val.image_url}
                 name={val.name}
