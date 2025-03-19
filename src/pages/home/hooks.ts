@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getAllMenuCategory, { CategoryType } from "../../services/menu-category";
 import { BaseApiResponse } from "../../utils/api";
 import getAllMenu from "../../services/menu";
-import { useMenuStore } from "../../hooks/menu-store";
+import { useFormStore, useMenuStore } from "../../hooks/menu-store";
 import { addToCart, getCart, ICartPayload } from "../../services/cart";
 import { toaster } from "../../components/ui/toaster";
 import { useCookie } from "../../hooks/cookies";
@@ -20,7 +20,7 @@ interface IMenu {
   description: string;
 }
 
-interface ICart {
+export interface ICart {
   id: number;
   total: number;
   service_amount: number;
@@ -29,7 +29,7 @@ interface ICart {
   items: ICartItem[];
 }
 
-interface ICartItem {
+export interface ICartItem {
   id: number;
   menu_id: number;
   quantity: number;
@@ -39,6 +39,7 @@ interface ICartItem {
 
 export const useMenus = (categoryID?: number) => {
   const { selectedType } = useMenuStore();
+  const useForm = useFormStore();
 
   const val = selectedType[0] as CategoryType;
 
@@ -57,7 +58,7 @@ export const useMenus = (categoryID?: number) => {
   const { isLoading: isMenuLoading, data: menuData } = useQuery<
     BaseApiResponse<IMenu[]>
   >({
-    queryKey: ["menu", cateID, val],
+    queryKey: ["menu", cateID, val, useForm.value],
     queryFn: () =>
       getAllMenu({
         typeMenu:
@@ -69,6 +70,7 @@ export const useMenus = (categoryID?: number) => {
             ? 3
             : 4,
         menucategoryID: cateID,
+        name: useForm.value,
       }),
     enabled: !!cateID,
     refetchOnWindowFocus: false,
@@ -85,13 +87,18 @@ export const useMenus = (categoryID?: number) => {
 
 export const useCartMutation = () => {
   const queryClient = useQueryClient();
+  const session = useCookie();
   const { isPending, mutate, isError } = useMutation({
     mutationFn: (payload: ICartPayload) => {
-      return addToCart(payload);
+      return addToCart({
+        menu_id: payload.menu_id,
+        quantity: payload.quantity,
+        session_id: session.getSessionID,
+      });
     },
     onSuccess: (_) => {
       toaster.create({
-        description: "Item has been added to cart",
+        description: "Successfully Processed",
         type: "success",
         duration: 3000,
       });
@@ -113,7 +120,7 @@ export const useCartMutation = () => {
 
 export const useCart = () => {
   const session = useCookie();
-  const { isLoading, data } = useQuery<BaseApiResponse<ICart>>({
+  const { isLoading, data, isError } = useQuery<BaseApiResponse<ICart>>({
     queryKey: ["cart"],
     queryFn: () =>
       getCart({
@@ -121,8 +128,8 @@ export const useCart = () => {
       }),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchInterval: 0,
+    refetchInterval: false,
+    retry: false,
   });
-
-  return { isLoading, data };
+  return { isLoading, data, isError };
 };

@@ -10,9 +10,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ShoppingCart } from "@icon-park/react";
-import { useMenuStore } from "../../../hooks/menu-store";
+import { useFormStore, useMenuStore } from "../../../hooks/menu-store";
 import { useCart } from "../hooks";
 import { useEffect, useState } from "react";
+import { CartDrawer } from "./drawer";
 
 export default function Header() {
   const typeMenu = createListCollection({
@@ -25,13 +26,23 @@ export default function Header() {
 
   const [cartCount, setCartCount] = useState(0);
   const useMenu = useMenuStore();
-  const { data } = useCart();
+  const { data, isError } = useCart();
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const useForm = useFormStore();
 
   useEffect(() => {
     if (data?.data && data?.data.items) {
       setCartCount(data?.data.items.length);
+    } else {
+      setCartCount(0);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (isError) {
+      setCartCount(0);
+    }
+  }, [isError]);
 
   return (
     <VStack className="header-container" width="full" p={4} position="relative">
@@ -54,8 +65,18 @@ export default function Header() {
               theme="outline"
               size="30"
               fill="#9F8E68"
-              onClick={() => alert("clicked")}
+              onClick={() => {
+                setIsOpenDrawer(true);
+              }}
             />
+
+            <CartDrawer
+              onClose={() => {
+                setIsOpenDrawer(false);
+              }}
+              Data={isError ? undefined : data?.data}
+              isOpen={isOpenDrawer}
+            ></CartDrawer>
             {/* Badge */}
             {cartCount > 0 && (
               <Box
@@ -97,6 +118,11 @@ export default function Header() {
           background="white"
           height={"10"}
           color={"black"}
+          onChange={(val) => {
+            val.preventDefault();
+            useForm.setValue(val.target.value);
+          }}
+          value={useForm.value}
         />
         <Select.Root
           width={{ base: "100px", md: "140px", lg: "160px" }}

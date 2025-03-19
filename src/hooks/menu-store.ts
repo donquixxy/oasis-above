@@ -16,4 +16,16 @@ const useMenuStore = create<MenuStore>((set) => ({
   previousType: ["food"],
 }));
 
-export { useMenuStore };
+interface SearchForm {
+  value: string;
+  setValue: (val: string) => void;
+  resetValue: () => void;
+}
+
+const useFormStore = create<SearchForm>((set) => ({
+  value: "",
+  setValue: (val) => set({ value: val }),
+  resetValue: () => set({ value: "" }),
+}));
+
+export { useMenuStore, useFormStore };

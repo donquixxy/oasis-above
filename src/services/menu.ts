@@ -17,9 +17,7 @@ export default async function getAllMenu(params: IMenuParams) {
       queryParams.menu_category_id = params.menucategoryID;
     }
 
-    if (params.name) {
-      queryParams.name = params.name;
-    }
+    queryParams.name = params.name;
 
     const result = await api.get("/menu/table", {
       params: queryParams,
@@ -27,6 +25,6 @@ export default async function getAllMenu(params: IMenuParams) {
 
     return result.data;
   } catch (e) {
-    throw e; // Avoid throwing generic `Error` object without message
+    throw e;
   }
 }

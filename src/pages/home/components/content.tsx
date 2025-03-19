@@ -7,7 +7,7 @@ import {
   SkeletonCardMenu,
   SkeletonChip,
 } from "../../../components/ui/chip";
-import { useMenuStore } from "../../../hooks/menu-store";
+import { useFormStore, useMenuStore } from "../../../hooks/menu-store";
 
 export default function HomeContent() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -19,11 +19,15 @@ export default function HomeContent() {
     useMenus(selectedCategoryID);
 
   const menuStore = useMenuStore();
+  const useForm = useFormStore();
 
   useEffect(() => {
     setSelectedCategoryID(undefined);
     setSelectedIndex(0);
+    useForm.resetValue();
   }, [menuStore.selectedType[0]]);
+
+  useEffect(() => {}, [useForm.value]);
 
   return (
     <div>
